@@ -1,0 +1,9 @@
+std_msgs/Header    header
+uint32             id
+string             label
+string             image_frame 
+int32              x           
+int32              y           
+int32              width       
+int32              height     
+sensor_msgs/Image  roi_image
