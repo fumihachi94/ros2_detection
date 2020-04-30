@@ -1,4 +1,4 @@
 std_msgs/Header   header
 string            frame 
 sensor_msgs/Image image
-float32[]         depth
+sensor_msgs/Image depth

@@ -56,6 +56,7 @@
 #include "realsense_rgbd/constants.hpp"
 #include "realsense_camera_msgs/msg/imu_info.hpp"
 #include "realsense_camera_msgs/msg/extrinsics.hpp"
+#include "vision_detection_msgs/msg/stereo_vision.hpp" // My original message @2020.4.13
 
 #define REALSENSE_ROS_EMBEDDED_VERSION_STR (VAR_ARG_STRING(VERSION \
                                                            : REALSENSE_ROS_MAJOR_VERSION.REALSENSE_ROS_MINOR_VERSION.REALSENSE_ROS_PATCH_VERSION))
@@ -195,6 +196,7 @@ private:
   std::map<stream_index_pair, std::vector<rs2::stream_profile>> _enabled_profiles;
 
   image_transport::Publisher _align_depth_publisher;
+  rclcpp::Publisher<vision_detection_msgs::msg::StereoVision>::SharedPtr _align_scm_publisher; // @2020.04.13
   rclcpp::Publisher<sensor_msgs::msg::CameraInfo>::SharedPtr _align_depth_camera_publisher;
 
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr _pointcloud_publisher;

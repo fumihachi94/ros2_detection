@@ -13,20 +13,6 @@
  * limitations under the License.
  */
 
-// 引用元
-// Copyright (c) 2018 Intel Corporation. All Rights Reserved
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
 #include "realsense_rgbd/realsense_camera_component.hpp"
 
@@ -364,6 +350,8 @@ void RealSenseCameraComponent::setupPublishers()
                 this, "camera/aligned_depth_to_color/image_raw");
             _align_depth_camera_publisher = this->create_publisher<sensor_msgs::msg::CameraInfo>(
                 "camera/aligned_depth_to_color/camera_info", 1);
+            _align_scm_publisher = this->create_publisher<vision_detection_msgs::msg::StereoVision>(
+                "camera/aligned_depth_to_color/scm_raw", 1); // @2020.04.13
         }
 
         if (_align_pointcloud && _align_depth)
@@ -1129,9 +1117,27 @@ void RealSenseCameraComponent::publishAlignedDepthImg(rs2::frame depth_frame, co
     img->header.frame_id = _optical_frame_id[COLOR];
     img->header.stamp = t;
     std::cout << "aligned_depth size : " << aligned_rgbd.total() << ", channels : " << aligned_rgbd.channels() << std::endl;
-    std::cout << "img data size : " << img->data.size() << std::endl;
     _align_depth_publisher.publish(img);
     _align_depth_camera_publisher->publish(info_msg);
+
+    vision_detection_msgs::msg::StereoVision::SharedPtr scm;
+    sensor_msgs::msg::Image::SharedPtr scm_left_img;
+    scm_left_img = cv_bridge::CvImage(
+              std_msgs::msg::Header(), sensor_msgs::image_encodings::TYPE_8UC3, color_image)
+              .toImageMsg();
+    std::cout << "img data size : " << scm_left_img.get() << std::endl;
+    //scm->image = scm_left_img.get();
+    // scm->image.width = width;
+    // scm->image.height = height;
+    // scm->image.is_bigendian = false;
+    // scm->image.step = width * bpp;
+    // scm->image.header.frame_id = _optical_frame_id[COLOR];
+    // scm->image.header.stamp = t;
+    // scm->depth = cv_bridge::CvImage(
+    //             std_msgs::msg::Header(), sensor_msgs::image_encodings::TYPE_16UC1, depth_image)
+    //             .toImageMsg();
+    //_align_scm_publisher->publish(scm);
+    std::cout << "img data size : " << img->data.size() << std::endl;
 }
 
 void RealSenseCameraComponent::publishPCTopic(const rclcpp::Time &t)

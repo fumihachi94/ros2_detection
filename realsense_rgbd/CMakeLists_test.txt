@@ -26,38 +26,17 @@ find_package(tf2 REQUIRED)
 
 include_directories(include)
 
-add_library(realsense_camera_component SHARED src/realsense_camera_component.cpp)
-target_compile_definitions(realsense_camera_component PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(realsense_camera_component
-  rclcpp  
-  image_transport
-  librealsense2
-  cv_bridge
-  realsense_camera_msgs
-  std_msgs
-  sensor_msgs
-  vision_detection_msgs
-  tf2
-  tf2_ros)
-rclcpp_components_register_nodes(realsense_camera_component "realsense_rgbd::RealSenseCameraComponent")
-
 add_executable(realsense_demo_executor
-  src/realsense_demo_executor.cpp)
-target_link_libraries(realsense_demo_executor
-  realsense_camera_component)
+  src/test.cpp
+)
 ament_target_dependencies(realsense_demo_executor
   rclcpp
+  vision_detection_msgs
 )
 
 install(TARGETS
-  realsense_camera_component
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-  )
-
-install(TARGETS 
   realsense_demo_executor
-  DESTINATION lib/${PROJECT_NAME})
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()
